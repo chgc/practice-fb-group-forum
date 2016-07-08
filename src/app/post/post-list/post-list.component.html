@@ -1,0 +1,6 @@
+<ul>
+  <li *ngFor="let post of data.posts">
+    {{ post.message }}
+  </li>
+</ul>
+<button class="btn btn-default" type="button"  (click)="next()">Load More</button>
