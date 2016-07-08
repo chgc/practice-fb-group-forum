@@ -59,14 +59,23 @@ export class FbService {
   login(options?: FacebookLoginOptions): Promise<FacebookLoginResponse> {
     return new Promise<FacebookLoginResponse>(
       (resolve, reject) => {
-        FB.login((response: FacebookLoginResponse) => {
-          if (response.authResponse) {
+        FB.getLoginStatus((response) => {
+          if (response.status === 'connected') {
             this.userObj = response;
             resolve(response);
-          } else {
+          } else if (response.status === 'not_authorized') {
             reject();
+          } else {
+            FB.login((response: FacebookLoginResponse) => {
+              if (response.authResponse) {
+                this.userObj = response;
+                resolve(response);
+              } else {
+                reject();
+              }
+            }, options);
           }
-        }, options);
+        });
       }
     );
   }
@@ -89,7 +98,7 @@ export class FbService {
 
   // Main Fuctions
   getGroupFeed(params): Observable<any> {
-    params['fields']='from,message,link,with_tags,updated_time,comments{comments,message,from}';
+    params['fields'] = 'from,message,link,with_tags,updated_time,comments{comments,message,from}';
 
     let ob = Observable.fromPromise(
       this.api('/' + this.groupID + '/feed', FacebookApiMethod.get, params)
@@ -97,10 +106,30 @@ export class FbService {
     return ob.map(res => {
       return {
         'posts': res.data.filter(d => {
-          return d.message && d.message.length>0;          
+          return d.message && d.message.length > 0;
         }),
         'paging': res.paging
       }
+    });
+  }
+
+  getPost(id): Observable<any> {    
+    let params = {
+      'token': this.userObj.authResponse.accessToken,
+      'fields': 'message,link,from,with_tags,updated_time,attachments,comments{comments,message,from}'
+    }
+
+    let ob = Observable.fromPromise(
+      this.api('/' + id, FacebookApiMethod.get, params)
+    );
+    return ob.map(res => {
+      return {
+        message: res.message,
+        from: res.from.name,
+        attachments: res.attachments.data[0].subattachments || [],
+        comments: res.comments.data,
+        updated_time: res.updated_time
+      };
     });
   }
 

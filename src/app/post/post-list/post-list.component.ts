@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router} from '@angular/router';
 
 import { FbService, FacebookApiMethod } from '../shared/index';
@@ -10,7 +10,7 @@ import { FbService, FacebookApiMethod } from '../shared/index';
   templateUrl: 'post-list.component.html',
   styleUrls: ['post-list.component.css']
 })
-export class PostListComponent implements OnInit {
+export class PostListComponent implements OnInit, OnDestroy {
 
   data: any = {
     posts: [],
@@ -36,12 +36,15 @@ export class PostListComponent implements OnInit {
     })
   }
 
+  ngOnDestroy() {
+    this.dataSub.unsubscribe();
+  }
+
   getFeed(params) {
     this.dataSub = this.fb.getGroupFeed(params).subscribe(res => {
       if (this.pageIndex == this.pages.length) {
         this.data.posts = this.data.posts.concat(res.posts);
         this.pages.push(this.data.paging);
-        console.log(this.data.posts);
       }
     }, err => {
       console.log(err);
@@ -62,5 +65,9 @@ export class PostListComponent implements OnInit {
         params[item[0]] = decodeURIComponent(item[1]);
       });
     this.getFeed(params);
+  }
+
+  onSelect(post) {
+    this.router.navigate(['/posts', post.id]);
   }
 }

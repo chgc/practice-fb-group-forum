@@ -10,11 +10,11 @@ import {
   async, inject
 } from '@angular/core/testing';
 
-import { PostListComponent } from './post-list.component';
+import { PostDetailComponent } from './post-detail.component';
 
-describe('Component: PostList', (fb, route, router) => {
+describe('Component: PostDetail', (fb, route, router) => {
   it('should create an instance', () => {
-    let component = new PostListComponent(fb, route, router);
+    let component = new PostDetailComponent(fb, route, router);
     expect(component).toBeTruthy();
   });
 });

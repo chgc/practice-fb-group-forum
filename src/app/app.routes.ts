@@ -5,7 +5,7 @@ export const routes: RouterConfig = [
   ...PostRoutes,
   {
     path: '**',
-    redirectTo: 'posts/'
+    redirectTo: 'posts'
   }
 ];
 

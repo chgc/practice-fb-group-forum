@@ -1,5 +1,5 @@
 <ul>
-  <li *ngFor="let post of data.posts">
+  <li *ngFor="let post of data.posts" (click)="onSelect(post)">
     {{ post.message }}
   </li>
 </ul>
