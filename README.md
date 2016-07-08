@@ -1,7 +1,7 @@
 # Fbforum
 
-用來練習angular2的，
-練習的東西有
+用來練習angular2的，練習的東西有
+
 1. angular/router
 2. ngrx/store
 
