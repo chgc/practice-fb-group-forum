@@ -1,0 +1,7 @@
+ul>li {
+    cursor: pointer;
+    margin: 10px 0px;
+}
+ul>li:hover{
+    background-color: yellow;
+}

@@ -1,7 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router} from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
 
-import { FbService, FacebookApiMethod } from '../shared/index';
+import { FbService, Post, LOAD } from '../shared/index';
+
+
 
 
 @Component({
@@ -10,53 +14,32 @@ import { FbService, FacebookApiMethod } from '../shared/index';
   templateUrl: 'post-list.component.html',
   styleUrls: ['post-list.component.css']
 })
-export class PostListComponent implements OnInit, OnDestroy {
+export class PostListComponent implements OnInit {
 
+  posts: Observable<any>;
   data: any = {
     posts: [],
     paging: { next: '', previous: '' }
   }
-  dataSub: any;
-  pages = [];
-  pageIndex: number;
 
-  constructor(private fb: FbService, private route: ActivatedRoute, private router: Router) {
-    this.pageIndex = 0;
-    this.pages = [];
+  constructor(private fb: FbService, private route: ActivatedRoute, private router: Router,
+    public store: Store<any>) {
+    this.posts = store.select('posts');
+    this.posts.subscribe(data => {
+      this.data = data;
+    });
   }
 
 
   ngOnInit() {
-    this.fb.login().then(res => {
-      this.getFeed({
-        'token': res.authResponse.accessToken
-      });
-    }, err => {
-      console.error(err);
-    })
-  }
+    this.fb.getGroupFeed();
 
-  ngOnDestroy() {
-    this.dataSub.unsubscribe();
   }
-
-  getFeed(params) {
-    this.dataSub = this.fb.getGroupFeed(params).subscribe(res => {
-      if (this.pageIndex == this.pages.length) {
-        this.data.posts = this.data.posts.concat(res.posts);
-        this.pages.push(this.data.paging);
-      }
-    }, err => {
-      console.log(err);
-    })
-  }
-
 
   next() {
     let url: string = "";
     let params = {};
-    url = this.pages[this.pageIndex].next;
-    this.pageIndex++;
+    url = this.data.paging.next;
 
     url.substring(url.indexOf('?') + 1)
       .split('&')
@@ -64,7 +47,7 @@ export class PostListComponent implements OnInit, OnDestroy {
         var item = element.split("=");
         params[item[0]] = decodeURIComponent(item[1]);
       });
-    this.getFeed(params);
+    this.fb.getGroupFeed(params);
   }
 
   onSelect(post) {

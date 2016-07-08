@@ -12,9 +12,9 @@ import {
 
 import { PostListComponent } from './post-list.component';
 
-describe('Component: PostList', (fb, route, router) => {
+describe('Component: PostList', (fb, route, router, store) => {
   it('should create an instance', () => {
-    let component = new PostListComponent(fb, route, router);
+    let component = new PostListComponent(fb, route, router, store);
     expect(component).toBeTruthy();
   });
 });

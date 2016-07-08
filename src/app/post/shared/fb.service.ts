@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
 import 'rxjs/Rx';
+
+import { Post, LOAD, } from '../shared/index';
 
 declare var FB: any;
 
@@ -12,7 +15,7 @@ export class FbService {
   private appId = '1161373380550577';
   private version = 'v2.6'; // or v2.0, v2.1, v2.2, v2.3
 
-  constructor() {
+  constructor(public store: Store<any>) {
     this.init();
   }
 
@@ -97,23 +100,29 @@ export class FbService {
   }
 
   // Main Fuctions
-  getGroupFeed(params): Observable<any> {
-    params['fields'] = 'from,message,link,with_tags,updated_time,comments{comments,message,from}';
+  getGroupFeed(params = {}) {
+    this.login().then(res => {
+      params['token'] = res.authResponse.accessToken;
+      if (!params['fields'])
+        params['fields'] = 'from,message,link,with_tags,updated_time,comments{comments,message,from}'
 
-    let ob = Observable.fromPromise(
       this.api('/' + this.groupID + '/feed', FacebookApiMethod.get, params)
-    );
-    return ob.map(res => {
-      return {
-        'posts': res.data.filter(d => {
-          return d.message && d.message.length > 0;
-        }),
-        'paging': res.paging
-      }
-    });
+        .then(res => {
+          this.store.dispatch({
+            type: LOAD,
+            payload: {
+              'posts': res.data.filter(d => {
+                return d.message && d.message.length > 0;
+              }),
+              'paging': res.paging
+            }
+          })
+        })
+    })
+
   }
 
-  getPost(id): Observable<any> {    
+  getPost(id): Observable<any> {
     let params = {
       'token': this.userObj.authResponse.accessToken,
       'fields': 'message,link,from,with_tags,updated_time,attachments,comments{comments,message,from}'
@@ -122,12 +131,16 @@ export class FbService {
     let ob = Observable.fromPromise(
       this.api('/' + id, FacebookApiMethod.get, params)
     );
-    return ob.map(res => {
+    return ob.map((res: any) => {
+      let comments = [];
+      if (res.comments)
+        comments = res.comments.data;
+
       return {
         message: res.message,
         from: res.from.name,
         attachments: res.attachments.data[0].subattachments || [],
-        comments: res.comments.data,
+        comments: comments,
         updated_time: res.updated_time
       };
     });
