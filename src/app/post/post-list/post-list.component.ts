@@ -24,14 +24,15 @@ export class PostListComponent implements OnInit {
 
   constructor(private fb: FbService, private route: ActivatedRoute, private router: Router,
     public store: Store<any>) {
-    this.posts = store.select('posts');
-    this.posts.subscribe(data => {
-      this.data = data;
-    });
   }
 
 
   ngOnInit() {
+    this.posts = this.store.select('posts');
+    this.posts.subscribe(data => {
+      this.data = data;
+    });
+    // call service -> dispatch -> store
     this.fb.getGroupFeed();
 
   }

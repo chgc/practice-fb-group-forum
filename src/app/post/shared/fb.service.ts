@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import 'rxjs/Rx';
 
-import { Post, LOAD, } from '../shared/index';
+import { Post, LOAD, Blacklist } from '../shared/index';
 
 declare var FB: any;
 
@@ -105,15 +105,20 @@ export class FbService {
       params['token'] = res.authResponse.accessToken;
       if (!params['fields'])
         params['fields'] = 'from,message,link,with_tags,updated_time,comments{comments,message,from}'
-
       this.api('/' + this.groupID + '/feed', FacebookApiMethod.get, params)
         .then(res => {
+
+          let posts = res.data.filter(d => {
+            return d.message && d.message.length > 0;
+          }).filter(d => {
+            return Blacklist.indexOf(d.from.id) == -1;
+          });
+          
+
           this.store.dispatch({
             type: LOAD,
             payload: {
-              'posts': res.data.filter(d => {
-                return d.message && d.message.length > 0;
-              }),
+              'posts': posts,
               'paging': res.paging
             }
           })
@@ -133,11 +138,17 @@ export class FbService {
     );
     return ob.map((res: any) => {
       let comments = [];
+      let link = '';
       if (res.comments)
         comments = res.comments.data;
-
+      if (res.link) {
+        if (res.link.indexOf('https://www.facebook.com/photo.php') == -1) {
+          link = res.link;
+        }
+      }
       return {
         message: res.message,
+        link: link,
         from: res.from.name,
         attachments: res.attachments.data[0].subattachments || [],
         comments: comments,

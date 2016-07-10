@@ -1,15 +1,16 @@
 <p>
-  {{ post.message }}
+  {{ post?.message }} 
+  <a [href]="post?.link" target="_blank">{{ post?.link}}</a>
 </p>
-<span>{{ post.from }}@{{ post.updated_time | date }}</span>
+<span>{{ post?.from }} {{ post?.updated_time | date }}</span>
 <br>
 <a class="btn btn-default" [routerLink]="['..']">back</a>
 <br>
-<img *ngFor="let img of post.attachments.data" [src]="img.media.image.src" [width]="img.media.image.width" [height]="img.media.image.height"
+<img *ngFor="let img of post?.attachments?.data" [src]="img.media.image.src" [width]="img.media.image.width" [height]="img.media.image.height"
 />
 <hr />
 <ul>
-  <li *ngFor="let comment of post.comments">
+  <li *ngFor="let comment of post?.comments">
     {{ comment.message }}
     <ul *ngIf="comment.comments">
       <li *ngFor="let subcomment of comment.comments.data">

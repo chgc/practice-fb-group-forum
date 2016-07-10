@@ -15,13 +15,6 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   post: any;
 
   constructor(private fb: FbService, private route: ActivatedRoute, private router: Router) {
-    this.post = {
-      attachments: { data: [] },
-      message: '',
-      from: '',
-      comments: [],
-      updated_time: undefined
-    };
   }
 
   ngOnInit() {
