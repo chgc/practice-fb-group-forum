@@ -3,7 +3,8 @@ import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import 'rxjs/Rx';
 
-import { Post, LOAD, Blacklist } from '../shared/index';
+import { AngularFire, FirebaseListObservable } from 'angularfire2';
+import { Post, LOAD, RESET } from '../shared/index';
 
 declare var FB: any;
 
@@ -11,11 +12,14 @@ declare var FB: any;
 export class FbService {
 
   userObj: FacebookLoginResponse;
+  blackListsub: FirebaseListObservable<any>;
   private groupID = '609637942379913';
   private appId = '1161373380550577';
   private version = 'v2.6'; // or v2.0, v2.1, v2.2, v2.3
+  blackList: any;
 
-  constructor(public store: Store<any>) {
+  constructor(public store: Store<any>, public af: AngularFire) {
+    this.blackListsub = af.database.list('blacklist');
     this.init();
   }
 
@@ -33,6 +37,9 @@ export class FbService {
         version: this.version
       }
     }
+    this.blackListsub.subscribe(data => {
+      this.blackList = data;
+    })
     FB.init(params);
   }
 
@@ -99,6 +106,10 @@ export class FbService {
     );
   }
 
+  refresh() {
+    this.store.dispatch({ type: RESET, payload: [] });
+    this.getGroupFeed();
+  }
   // Main Fuctions
   getGroupFeed(params = {}) {
     this.login().then(res => {
@@ -107,13 +118,11 @@ export class FbService {
         params['fields'] = 'from,message,link,with_tags,updated_time,comments{comments,message,from}'
       this.api('/' + this.groupID + '/feed', FacebookApiMethod.get, params)
         .then(res => {
-
           let posts = res.data.filter(d => {
             return d.message && d.message.length > 0;
           }).filter(d => {
-            return Blacklist.indexOf(d.from.id) == -1;
+            return !this.existInBlackList(d.from.id);
           });
-          
 
           this.store.dispatch({
             type: LOAD,
@@ -157,7 +166,24 @@ export class FbService {
     });
   }
 
+  addToBlackList(post) {
+    if (!this.existInBlackList(post.from.id)) {
+      this.blackListsub.push(post.from);
+      this.refresh();
+    }
+  }
 
+  private existInBlackList(id) {
+    let isfound = false;
+    if (this.blackList) {
+      for (let i = 0; i < this.blackList.length; i++) {
+        if (this.blackList[i].id == id) {
+          isfound = true;
+        }
+      }
+    }
+    return isfound;
+  }
 }
 
 export interface FacebookInitParams {

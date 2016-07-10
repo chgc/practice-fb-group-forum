@@ -4,6 +4,8 @@ import { AppComponent, environment, APP_ROUTER_PROVIDERS } from './app/';
 import { ROUTER_DIRECTIVES } from '@angular/router';
 
 import { provideStore } from '@ngrx/store';
+import { FIREBASE_PROVIDERS, defaultFirebase } from 'angularfire2';
+
 import { postReducer } from './app/post/shared/postReducer';
 
 if (environment.production) {
@@ -16,6 +18,14 @@ bootstrap(AppComponent, [
   provide(PLATFORM_DIRECTIVES, {
     useValue: [ROUTER_DIRECTIVES],
     multi: true
+  }),
+  FIREBASE_PROVIDERS,
+  // Initialize Firebase app  
+  defaultFirebase({
+    apiKey: "AIzaSyAaH5ixnZzy-V9QcuUOmfY6h_Z9_KT3esQ",
+    authDomain: "fbforum-ef469.firebaseapp.com",
+    databaseURL: "https://fbforum-ef469.firebaseio.com",
+    storageBucket: "fbforum-ef469.appspot.com",
   })
 ]);
 

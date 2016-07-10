@@ -17,7 +17,9 @@ module.exports = function(defaults) {
       'rxjs/**/*.+(js|js.map)',
       '@angular/**/*.+(js|js.map)',
       'bootstrap/dist/**',
-      '@ngrx/**/*.+(js|js.map)'
+      '@ngrx/**/*.+(js|js.map)',
+      'angularfire2/**/*.js',
+      'firebase/*.js'   
     ]
   });
 };

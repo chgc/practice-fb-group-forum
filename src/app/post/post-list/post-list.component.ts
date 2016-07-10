@@ -54,4 +54,9 @@ export class PostListComponent implements OnInit {
   onSelect(post) {
     this.router.navigate(['/posts', post.id]);
   }
+
+  addToBlackList(post) {
+    this.fb.addToBlackList(post);
+    
+  }
 }
