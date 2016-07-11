@@ -7,4 +7,4 @@ import { Component, ViewEncapsulation } from '@angular/core';
   styleUrls: ['app.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent { }
+export class AppComponent{}

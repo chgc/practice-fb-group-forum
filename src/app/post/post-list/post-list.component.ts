@@ -14,9 +14,7 @@ import { FbService, Post, LOAD } from '../shared/index';
   templateUrl: 'post-list.component.html',
   styleUrls: ['post-list.component.css']
 })
-export class PostListComponent implements OnInit {
-
-  posts: Observable<any>;
+export class PostListComponent implements OnInit {  
   data: any = {
     posts: [],
     paging: { next: '', previous: '' }
@@ -28,16 +26,12 @@ export class PostListComponent implements OnInit {
 
 
   ngOnInit() {
-    this.posts = this.store.select('posts');
-    this.posts.subscribe(data => {
+    this.store.select('posts').subscribe(data => {
       this.data = data;
-    });
-    // call service -> dispatch -> store
-    this.fb.getGroupFeed();
-
+    });   
   }
 
-  next() {
+  loadmore() {
     let url: string = "";
     let params = {};
     url = this.data.paging.next;

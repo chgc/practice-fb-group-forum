@@ -37,10 +37,12 @@ export class FbService {
         version: this.version
       }
     }
-    this.blackListsub.subscribe(data => {
+    this.blackListsub.do(() => {
+      FB.init(params);
+    }).subscribe(data => {
       this.blackList = data;
+      this.getGroupFeed();
     })
-    FB.init(params);
   }
 
   /**
@@ -106,11 +108,12 @@ export class FbService {
     );
   }
 
+  // Main Fuctions
   refresh() {
     this.store.dispatch({ type: RESET, payload: [] });
     this.getGroupFeed();
   }
-  // Main Fuctions
+  
   getGroupFeed(params = {}) {
     this.login().then(res => {
       params['token'] = res.authResponse.accessToken;
