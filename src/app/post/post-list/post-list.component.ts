@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 
 import { FbService, Post, LOAD } from '../shared/index';
+import { NewlinePipe } from '../../shared/index';
 
 
 
@@ -12,9 +13,10 @@ import { FbService, Post, LOAD } from '../shared/index';
   moduleId: module.id,
   selector: 'fbf-post-list',
   templateUrl: 'post-list.component.html',
-  styleUrls: ['post-list.component.css']
+  styleUrls: ['post-list.component.css'],
+  pipes: [NewlinePipe]
 })
-export class PostListComponent implements OnInit {  
+export class PostListComponent implements OnInit {
   data: any = {
     posts: [],
     paging: { next: '', previous: '' }
@@ -28,7 +30,7 @@ export class PostListComponent implements OnInit {
   ngOnInit() {
     this.store.select('posts').subscribe(data => {
       this.data = data;
-    });   
+    });
   }
 
   loadmore() {
@@ -51,6 +53,6 @@ export class PostListComponent implements OnInit {
 
   addToBlackList(post) {
     this.fb.addToBlackList(post);
-    
+
   }
 }

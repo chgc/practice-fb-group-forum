@@ -16,6 +16,7 @@ export class FbService {
   private groupID = '609637942379913';
   private appId = '1161373380550577';
   private version = 'v2.6'; // or v2.0, v2.1, v2.2, v2.3
+  private postlimit = 50;
   blackList: any;
 
   constructor(public store: Store<any>, public af: AngularFire) {
@@ -37,8 +38,8 @@ export class FbService {
         version: this.version
       }
     }
+    FB.init(params);
     this.blackListsub.do(() => {
-      FB.init(params);
     }).subscribe(data => {
       this.blackList = data;
       this.getGroupFeed();
@@ -113,10 +114,11 @@ export class FbService {
     this.store.dispatch({ type: RESET, payload: [] });
     this.getGroupFeed();
   }
-  
+
   getGroupFeed(params = {}) {
     this.login().then(res => {
       params['token'] = res.authResponse.accessToken;
+      params['limit'] = this.postlimit;
       if (!params['fields'])
         params['fields'] = 'from,message,link,with_tags,updated_time,comments{comments,message,from}'
       this.api('/' + this.groupID + '/feed', FacebookApiMethod.get, params)

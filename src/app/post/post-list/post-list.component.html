@@ -1,7 +1,10 @@
 <ul>
   <li *ngFor="let post of data?.Posts" >
     <button class="btn btn-xs btn-warning" (click)="addToBlackList(post)">block</button>
-    <span (click)="onSelect(post)">{{ post.message }}</span>
+    <div (click)="onSelect(post)" [innerHtml]="post.message | newline">
+      
+    </div>
+
   </li>
 </ul>
 <button class="btn btn-default" type="button"  (click)="loadmore()">Load More</button>

@@ -1,7 +1,7 @@
-<p>
-  {{ post?.message }} 
+<div> 
+  <p [innerHtml]="post?.message | newline">></p>
   <a [href]="post?.link" target="_blank">{{ post?.link}}</a>
-</p>
+</div>
 <span>{{ post?.from }} {{ post?.updated_time | date }}</span>
 <br>
 <a class="btn btn-default" [routerLink]="['..']">back</a>
