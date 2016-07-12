@@ -173,7 +173,9 @@ export class FbService {
 
   addToBlackList(post) {
     if (!this.existInBlackList(post.from.id)) {
-      this.blackListsub.push(post.from);
+      let user = post.from;
+      user['updated_time'] = new Date();      
+      this.blackListsub.push(user);
       this.refresh();
     }
   }

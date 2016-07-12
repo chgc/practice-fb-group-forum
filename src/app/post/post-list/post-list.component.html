@@ -1,10 +1,15 @@
-<ul>
-  <li *ngFor="let post of data?.Posts" >
-    <button class="btn btn-xs btn-warning" (click)="addToBlackList(post)">block</button>
-    <div (click)="onSelect(post)" [innerHtml]="post.message | newline">
-      
+<div class="row-fluid card" *ngFor="let post of data?.Posts">
+  <div class="content span12">
+    <div  [innerHtml]="post.message | more: 0:120 | newline">
     </div>
+    <div class="writer">
+      <small>{{post.updated_time | date }}  by {{ post.from.name }}</small>
+    </div>    
+  </div>
+  <div class="actions">
+    <button class="btn btn-xs btn-info" (click)="onSelect(post)">閱讀</button>
+    <button class="btn btn-xs btn-warning pull-right" (click)="addToBlackList(post)">封鎖</button>
+  </div>
+</div>
 
-  </li>
-</ul>
-<button class="btn btn-default" type="button"  (click)="loadmore()">Load More</button>
+<button class="btn btn-default" type="button" (click)="loadmore()">Load More</button>

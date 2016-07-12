@@ -6,11 +6,11 @@ import {
   expect, it, xit,
   async, inject
 } from '@angular/core/testing';
-import { NewlinePipe } from './newline.pipe';
+import { MorePipe } from './more.pipe';
 
-describe('Pipe: Newline', (sanitizer) => {
+describe('Pipe: More', () => {
   it('create an instance', () => {
-    let pipe = new NewlinePipe(sanitizer);
+    let pipe = new MorePipe();
     expect(pipe).toBeTruthy();
   });
 });

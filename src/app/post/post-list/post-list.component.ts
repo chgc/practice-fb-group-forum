@@ -4,8 +4,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 
 import { FbService, Post, LOAD } from '../shared/index';
-import { NewlinePipe } from '../../shared/index';
-
+import { NewlinePipe, MorePipe } from '../../shared/index';
 
 
 
@@ -14,7 +13,7 @@ import { NewlinePipe } from '../../shared/index';
   selector: 'fbf-post-list',
   templateUrl: 'post-list.component.html',
   styleUrls: ['post-list.component.css'],
-  pipes: [NewlinePipe]
+  pipes: [ NewlinePipe, MorePipe ]
 })
 export class PostListComponent implements OnInit {
   data: any = {
@@ -30,6 +29,7 @@ export class PostListComponent implements OnInit {
   ngOnInit() {
     this.store.select('posts').subscribe(data => {
       this.data = data;
+      console.log(this.data);
     });
   }
 
