@@ -13,13 +13,14 @@ import { NewlinePipe, MorePipe } from '../../shared/index';
   selector: 'fbf-post-list',
   templateUrl: 'post-list.component.html',
   styleUrls: ['post-list.component.css'],
-  pipes: [ NewlinePipe, MorePipe ]
+  pipes: [NewlinePipe, MorePipe]
 })
 export class PostListComponent implements OnInit {
   data: any = {
     posts: [],
     paging: { next: '', previous: '' }
   }
+  isloadingMore: boolean;
 
   constructor(private fb: FbService, private route: ActivatedRoute, private router: Router,
     public store: Store<any>) {
@@ -29,7 +30,7 @@ export class PostListComponent implements OnInit {
   ngOnInit() {
     this.store.select('posts').subscribe(data => {
       this.data = data;
-      console.log(this.data);
+      this.isloadingMore = false;
     });
   }
 
@@ -44,6 +45,7 @@ export class PostListComponent implements OnInit {
         var item = element.split("=");
         params[item[0]] = decodeURIComponent(item[1]);
       });
+    this.isloadingMore = true;
     this.fb.getGroupFeed(params);
   }
 
@@ -53,6 +55,15 @@ export class PostListComponent implements OnInit {
 
   addToBlackList(post) {
     this.fb.addToBlackList(post);
+  }
 
+  onScroll(event) {
+    var windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
+    var body = document.body, html = document.documentElement;
+    var docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+    let windowBottom = windowHeight + window.pageYOffset;
+    if (windowBottom >= docHeight - 50 && this.isloadingMore == false) {
+      this.loadmore();
+    }
   }
 }
