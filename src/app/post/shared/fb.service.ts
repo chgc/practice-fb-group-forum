@@ -15,7 +15,7 @@ export class FbService {
   blackListsub: FirebaseListObservable<any>;
   private groupID = '609637942379913';
   private appId = '1161373380550577';
-  private version = 'v2.6'; // or v2.0, v2.1, v2.2, v2.3
+  private version = 'v2.7'; // or v2.0, v2.1, v2.2, v2.3
   private postlimit = 50;
   blackList: any;
 
@@ -54,9 +54,20 @@ export class FbService {
       * @returns {Promise<any>}
       */
   api(path: string, method?: FacebookApiMethod, params?: any): Promise<any> {
+    let actionName;
+    switch (method) {
+      case 1:
+        actionName = 'post';
+        break;
+      case 2:
+        actionName = 'delete';
+      default:
+        actionName = 'get';
+        break;
+    }
     return new Promise<any>(
       (resolve, reject) => {
-        FB.api(path, method, params, (response: any) => {
+        FB.api(path, actionName, params, (response: any) => {
           if (!response) {
             reject();
           } else if (response.error) {
@@ -144,7 +155,7 @@ export class FbService {
   getPost(id): Observable<any> {
     let params = {
       'token': this.userObj.authResponse.accessToken,
-      'fields': 'message,link,from,with_tags,updated_time,attachments,comments{comments,message,from}'
+      'fields': 'id,message,link,from,with_tags,updated_time,attachments,comments{comments,message,from}'
     }
 
     let ob = Observable.fromPromise(
@@ -161,6 +172,7 @@ export class FbService {
         }
       }
       return {
+        id: res.id,
         message: res.message,
         link: link,
         from: res.from.name,
@@ -174,7 +186,7 @@ export class FbService {
   addToBlackList(post) {
     if (!this.existInBlackList(post.from.id)) {
       let user = post.from;
-      user['updated_time'] = new Date();      
+      user['updated_time'] = new Date();
       this.blackListsub.push(user);
       this.refresh();
     }
@@ -190,6 +202,12 @@ export class FbService {
       }
     }
     return isfound;
+  }
+
+  updatePostTag(post: any, tag: string) {
+    return this.api(post.id, FacebookApiMethod.post, {
+      'message_tags': tag
+    })
   }
 }
 

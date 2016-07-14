@@ -37,6 +37,5 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-  }
-
+  }  
 }
