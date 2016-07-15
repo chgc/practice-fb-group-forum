@@ -12,9 +12,9 @@ import {
 
 import { PostComponent } from './post.component';
 
-describe('Component: Post', () => {
+describe('Component: Post', (fb) => {
   it('should create an instance', () => {
-    let component = new PostComponent();
+    let component = new PostComponent(fb);
     expect(component).toBeTruthy();
   });
 });

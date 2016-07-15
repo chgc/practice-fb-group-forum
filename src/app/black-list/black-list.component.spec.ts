@@ -12,9 +12,9 @@ import {
 
 import { BlackListComponent } from './black-list.component';
 
-describe('Component: BlackList', (service) => {
+describe('Component: BlackList', (service, fb) => {
   it('should create an instance', () => {
-    let component = new BlackListComponent(service);
+    let component = new BlackListComponent(service, fb);
     expect(component).toBeTruthy();
   });
 });

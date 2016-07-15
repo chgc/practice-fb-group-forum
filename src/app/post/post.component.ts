@@ -9,9 +9,12 @@ import { FbService } from './shared/index';
 })
 export class PostComponent implements OnInit {
 
-  constructor() {}
+  constructor(private fb: FbService) {
+
+  }
 
   ngOnInit() {
+    this.fb.login();
   }
 
 }

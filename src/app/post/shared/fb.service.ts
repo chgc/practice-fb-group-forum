@@ -23,10 +23,10 @@ export class FbService {
   blackList: any;
 
   constructor(public store: Store<any>, public af: AngularFire) {
-    this.blackListsub = af.database.list('blacklist');
     this.authUsersub = this.af.auth.subscribe(user => {
       this.authUser = user;
-      console.log(this.authUser);
+      this.blackListsub = af.database.list('blacklist');
+      this.load();
     })
     this.init();
   }
@@ -46,11 +46,6 @@ export class FbService {
       }
     }
     FB.init(params);
-    this.blackListsub.do(() => {
-    }).subscribe(data => {
-      this.blackList = data;
-      this.getGroupFeed();
-    })
   }
 
   /**
@@ -155,6 +150,13 @@ export class FbService {
   refresh() {
     this.store.dispatch({ type: RESET, payload: [] });
     this.getGroupFeed();
+  }
+
+  load() {
+    this.blackListsub.subscribe(data => {
+      this.blackList = data;
+      this.getGroupFeed();
+    })
   }
 
   getGroupFeed(params = {}) {
