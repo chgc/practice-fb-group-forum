@@ -3,24 +3,30 @@ import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import 'rxjs/Rx';
 
-import { AngularFire, FirebaseListObservable } from 'angularfire2';
+import { AngularFire, FirebaseListObservable, FirebaseAuthState, AuthProviders, AuthMethods } from 'angularfire2';
 import { Post, LOAD, RESET } from '../shared/index';
 
 declare var FB: any;
+declare let firebase: any;
 
 @Injectable()
 export class FbService {
 
   userObj: FacebookLoginResponse;
   blackListsub: FirebaseListObservable<any>;
+  authUsersub: any;
+  authUser: FirebaseAuthState;
   private groupID = '609637942379913';
-  private appId = '1161373380550577';
+  private appId = '263627917354461';
   private version = 'v2.7'; // or v2.0, v2.1, v2.2, v2.3
   private postlimit = 50;
   blackList: any;
 
   constructor(public store: Store<any>, public af: AngularFire) {
     this.blackListsub = af.database.list('blacklist');
+    this.authUsersub = this.af.auth.subscribe(user => {
+      this.authUser = user;
+    })
     this.init();
   }
 
@@ -80,20 +86,44 @@ export class FbService {
     );
   }
 
+  fbLogin(res) {
+    let creds = firebase.auth.FacebookAuthProvider.credential(res.authResponse.accessToken)
+    if (this.authUser) {
+      return new Promise<any>(
+        (resolve, reject) => {
+          resolve();
+        }
+      );
+    }
+    return this.af.auth.login(creds,
+      {
+        provider: AuthProviders.Facebook,
+        method: AuthMethods.OAuthToken,
+        remember: 'default',
+        scope: ['public_profile'],
+      });
+  }
+
+
   login(options?: FacebookLoginOptions): Promise<FacebookLoginResponse> {
     return new Promise<FacebookLoginResponse>(
       (resolve, reject) => {
         FB.getLoginStatus((response) => {
           if (response.status === 'connected') {
             this.userObj = response;
-            resolve(response);
+            this.fbLogin(response).then(() => {
+              resolve(response);
+            });
           } else if (response.status === 'not_authorized') {
             reject();
           } else {
             FB.login((response: FacebookLoginResponse) => {
               if (response.authResponse) {
                 this.userObj = response;
-                resolve(response);
+                // IMPORTANT STEP !!
+                this.fbLogin(response).then(() => {
+                  resolve(response);
+                });
               } else {
                 reject();
               }
