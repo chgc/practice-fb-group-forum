@@ -12,9 +12,9 @@ import {
 
 import { PostDetailComponent } from './post-detail.component';
 
-describe('Component: PostDetail', (fb, route, router) => {
+describe('Component: PostDetail', (fb, route, router, store) => {
   it('should create an instance', () => {
-    let component = new PostDetailComponent(fb, route, router);
+    let component = new PostDetailComponent(fb, route, router, store);
     expect(component).toBeTruthy();
   });
 });

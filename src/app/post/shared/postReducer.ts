@@ -4,6 +4,8 @@ import { Post, FbService, FacebookApiMethod} from './index';
 
 export const LOAD = 'LOAD';
 export const RESET = 'RESET';
+export const CLEAR = 'CLEAR';
+export const SET = 'SET';
 
 let INITAL_STATE: Post = new Post();
 
@@ -31,6 +33,12 @@ export const postReducer: ActionReducer<Post>
                     ...ar];
                 newstate.paging = Object.assign({}, action.payload.paging);
                 return newstate;
+            case SET:
+                Object.assign(state.current, action.payload);
+                return state;
+            case CLEAR:
+                state.current = {};
+                return state;
             case RESET:
                 return new Post();
             default:

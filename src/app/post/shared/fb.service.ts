@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import 'rxjs/Rx';
 
 import { AngularFire, FirebaseListObservable, FirebaseAuthState, AuthProviders, AuthMethods } from 'angularfire2';
-import { Post, LOAD, RESET } from '../shared/index';
+import { Post, LOAD, RESET, SET } from '../shared/index';
 
 declare var FB: any;
 declare let firebase: any;
@@ -25,9 +25,9 @@ export class FbService {
   constructor(public store: Store<any>, public af: AngularFire) {
     this.authUsersub = this.af.auth.subscribe(user => {
       this.authUser = user;
-      this.blackListsub = af.database.list('blacklist');
-      this.load();
     })
+    this.blackListsub = af.database.list('blacklist');
+    this.load();
     this.init();
   }
 
@@ -155,7 +155,9 @@ export class FbService {
   load() {
     this.blackListsub.subscribe(data => {
       this.blackList = data;
-      this.getGroupFeed();
+      if (this.blackList) {
+        this.getGroupFeed();
+      }
     })
   }
 
@@ -185,16 +187,13 @@ export class FbService {
 
   }
 
-  getPost(id): Observable<any> {
+  getPost(id): void {
     let params = {
       'token': this.userObj.authResponse.accessToken,
       'fields': 'id,message,link,from,with_tags,updated_time,attachments,comments{comments,message,from}'
     }
 
-    let ob = Observable.fromPromise(
-      this.api('/' + id, FacebookApiMethod.get, params)
-    );
-    return ob.map((res: any) => {
+    this.api('/' + id, FacebookApiMethod.get, params).then(res => {
       let comments = [];
       let link = '';
       if (res.comments)
@@ -204,7 +203,7 @@ export class FbService {
           link = res.link;
         }
       }
-      return {
+      let payload = {
         id: res.id,
         message: res.message,
         link: link,
@@ -213,7 +212,11 @@ export class FbService {
         comments: comments,
         updated_time: res.updated_time
       };
-    });
+      this.store.dispatch({
+        type: SET,
+        payload: payload
+      });
+    })
   }
 
   addToBlackList(post) {
