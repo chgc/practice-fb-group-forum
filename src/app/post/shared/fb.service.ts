@@ -26,6 +26,7 @@ export class FbService {
     this.blackListsub = af.database.list('blacklist');
     this.authUsersub = this.af.auth.subscribe(user => {
       this.authUser = user;
+      console.log(this.authUser);
     })
     this.init();
   }
@@ -217,6 +218,7 @@ export class FbService {
     if (!this.existInBlackList(post.from.id)) {
       let user = post.from;
       user['updated_time'] = new Date();
+      user['uid'] = this.authUser.uid;
       this.blackListsub.push(user);
       this.refresh();
     }
@@ -225,19 +227,14 @@ export class FbService {
   private existInBlackList(id) {
     let isfound = false;
     if (this.blackList) {
-      for (let i = 0; i < this.blackList.length; i++) {
-        if (this.blackList[i].id == id) {
+      let myblacklist = this.blackList.filter(x => x.uid == this.authUser.uid);
+      for (let i = 0; i < myblacklist.length; i++) {
+        if (myblacklist[i].id == id) {
           isfound = true;
         }
       }
     }
     return isfound;
-  }
-
-  updatePostTag(post: any, tag: string) {
-    return this.api(post.id, FacebookApiMethod.post, {
-      'message_tags': tag
-    })
   }
 }
 

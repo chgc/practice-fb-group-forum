@@ -7,6 +7,7 @@ import { provideStore } from '@ngrx/store';
 import { FIREBASE_PROVIDERS, defaultFirebase } from 'angularfire2';
 
 import { postReducer } from './app/post/shared/postReducer';
+import { FbService } from './app/post/shared';
 
 if (environment.production) {
   enableProdMode();
@@ -19,8 +20,9 @@ bootstrap(AppComponent, [
     useValue: [ROUTER_DIRECTIVES],
     multi: true
   }),
+  FbService,
   FIREBASE_PROVIDERS,
-  // Initialize Firebase app  
+  // Initialize Firebase app
   defaultFirebase({
     apiKey: "AIzaSyAaH5ixnZzy-V9QcuUOmfY6h_Z9_KT3esQ",
     authDomain: "fbforum-ef469.firebaseapp.com",

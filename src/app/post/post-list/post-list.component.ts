@@ -38,15 +38,16 @@ export class PostListComponent implements OnInit {
     let url: string = "";
     let params = {};
     url = this.data.paging.next;
-
-    url.substring(url.indexOf('?') + 1)
-      .split('&')
-      .forEach(element => {
-        var item = element.split("=");
-        params[item[0]] = decodeURIComponent(item[1]);
-      });
-    this.isloadingMore = true;
-    this.fb.getGroupFeed(params);
+    if (url) {
+      url.substring(url.indexOf('?') + 1)
+        .split('&')
+        .forEach(element => {
+          var item = element.split("=");
+          params[item[0]] = decodeURIComponent(item[1]);
+        });
+      this.isloadingMore = true;
+      this.fb.getGroupFeed(params);
+    }
   }
 
   onSelect(post) {
