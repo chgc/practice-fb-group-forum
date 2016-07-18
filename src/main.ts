@@ -7,6 +7,7 @@ import { provideStore } from '@ngrx/store';
 import { FIREBASE_PROVIDERS, defaultFirebase } from 'angularfire2';
 
 import { postReducer } from './app/post/shared/postReducer';
+import { FavorReducer } from './app/favor/shared/favor.reducer';
 import { FbService } from './app/post/shared';
 
 if (environment.production) {
@@ -16,7 +17,10 @@ if (environment.production) {
 bootstrap(AppComponent, [
   APP_ROUTER_PROVIDERS,
   ...APP_PROVIDERS,
-  provideStore({ posts: postReducer }),
+  provideStore({
+    posts: postReducer,
+    favors: FavorReducer
+  }),
   provide(PLATFORM_DIRECTIVES, {
     useValue: [ROUTER_DIRECTIVES],
     multi: true

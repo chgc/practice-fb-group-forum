@@ -11,8 +11,7 @@ export const PostRoutes: RouterConfig = [
         children: [
             { path: '', component: PostListComponent },
             {
-                path: ':id', component: PostDetailComponent,
-                canActivate: [CheckLogin]
+                path: ':id', component: PostDetailComponent
             }
         ]
     }

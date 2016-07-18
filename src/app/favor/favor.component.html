@@ -1,3 +1,5 @@
-<p>
-  favor works!
-</p>
+<div *ngFor="let favor of favorList">
+    {{ favor.message}}
+    <hr>
+    <button type="button" class="btn btn-warning" (click)="removeFavor(favor)">移除</button>
+</div>

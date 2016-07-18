@@ -32,6 +32,7 @@ export class PostListComponent implements OnInit {
       this.data = data;
       this.isloadingMore = false;
     });
+    this.fb.getGroupFeed();
   }
 
   loadmore() {

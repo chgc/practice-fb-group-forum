@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
+import { AngularFire } from 'angularfire2';
 
 @Component({
   moduleId: module.id,
@@ -8,9 +11,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FavorComponent implements OnInit {
 
-  constructor() {}
-
-  ngOnInit() {
+  favorsub: Observable<any>;
+  favorList = [];
+  constructor(private store: Store<any>, private af: AngularFire) {
+    this.favorsub = this.store.select('favors');
   }
 
+  ngOnInit() {
+    this.favorsub.subscribe(data => {
+      this.favorList = data;
+    })
+  }
+  removeFavor(favor) {
+    this.af.database.list('favor').remove(favor.$key);
+  }
 }

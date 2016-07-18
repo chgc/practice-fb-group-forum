@@ -30,7 +30,6 @@ export class BlackListComponent implements OnInit {
       this.users.forEach(element => {
         element['updated_time'] = new Date(element['updated_time']);
       });
-      console.log(this.users);
     })
   }
 

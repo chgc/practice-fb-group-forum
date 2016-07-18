@@ -19,7 +19,7 @@ export const postReducer: ActionReducer<Post>
       }
       return false;
     }
-
+    console.log('post:', action);
     switch (action.type) {
       case LOAD:
         let ar = [];

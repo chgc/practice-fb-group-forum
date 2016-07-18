@@ -5,7 +5,8 @@
 <br>
 <span>{{ post?.from }} {{ post?.updated_time | date }}</span>
 <br>
-<button type="button" class="btn btn-info" (click)="addToFavor(post)">加入我的最愛</button>
+<button type="button" class="btn btn-info" (click)="addToFavor(post)" *ngIf="!fb.existInFavorList(post.id)">加入我的最愛</button>
+<button type="button" class="btn btn-warning" (click)="removeFavor(post)" *ngIf="fb.existInFavorList(post.id)">移出我的最愛</button>
 <a class="btn btn-default pull-right" [routerLink]="['..']">back</a>
 <br>
 <img *ngFor="let img of post?.attachments?.data" [src]="img.media.image.src" [width]="img.media.image.width" [height]="img.media.image.height" />

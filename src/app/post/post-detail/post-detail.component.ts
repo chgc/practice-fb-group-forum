@@ -19,10 +19,12 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   fbSub: any;
   post: any;
   posts: Observable<any>;
+  favorsub: Observable<any>;
+  favorList = [];
 
   constructor(private fb: FbService, private route: ActivatedRoute, private router: Router, public store: Store<any>) {
     this.posts = this.store.select('posts');
-
+    this.favorsub = this.store.select('favors');
   }
 
   ngOnInit() {
@@ -36,6 +38,10 @@ export class PostDetailComponent implements OnInit, OnDestroy {
         this.post = data.current;
       }
     });
+
+    this.favorsub.subscribe(data => {
+      this.favorList = data;
+    })
   }
 
   ngOnDestroy() {
@@ -48,5 +54,9 @@ export class PostDetailComponent implements OnInit, OnDestroy {
       'from': post.from
     };
     this.fb.addToMyFavor(obj);
+  }
+
+  removeFavor(post) {
+    this.fb.removeFaovr(post);
   }
 }

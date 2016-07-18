@@ -5,7 +5,7 @@ import 'rxjs/Rx';
 
 import { AngularFire, FirebaseListObservable, FirebaseAuthState, AuthProviders, AuthMethods } from 'angularfire2';
 import { Post, LOAD, RESET, SET } from '../shared/index';
-
+import { FAVOR_LOAD } from '../../favor/shared/favor.reducer';
 declare var FB: any;
 declare let firebase: any;
 
@@ -25,12 +25,9 @@ export class FbService {
   favorList: any;
 
   constructor(public store: Store<any>, public af: AngularFire) {
-    this.authUsersub = this.af.auth.subscribe(user => {
-      this.authUser = user;
-    })
+    this.authUsersub = af.auth;
     this.blackListsub = af.database.list('blacklist');
     this.favorListsub = af.database.list('favor');
-    this.load();
     this.init();
   }
 
@@ -49,6 +46,9 @@ export class FbService {
       }
     }
     FB.init(params);
+    this.login().then(res => {
+      this.load();
+    })
   }
 
   /**
@@ -158,13 +158,17 @@ export class FbService {
   load() {
     this.blackListsub.subscribe(data => {
       this.blackList = data;
-      if (this.blackList) {
-        this.getGroupFeed();
-      }
     })
     this.favorListsub.subscribe(data => {
-      this.favorList = data;
+      this.favorList = data.filter(x => {
+        return x.uid == this.authUser.uid;
+      });
+      this.store.dispatch({ type: FAVOR_LOAD, payload: this.favorList });
     });
+
+    this.authUsersub.subscribe(user => {
+      this.authUser = user;
+    })
   }
 
   getGroupFeed(params = {}) {
@@ -194,35 +198,37 @@ export class FbService {
   }
 
   getPost(id): void {
-    let params = {
-      'token': this.userObj.authResponse.accessToken,
-      'fields': 'id,message,link,from,with_tags,updated_time,attachments,comments{comments,message,from}'
-    }
-
-    this.api('/' + id, FacebookApiMethod.get, params).then(res => {
-      let comments = [];
-      let link = '';
-      if (res.comments)
-        comments = res.comments.data;
-      if (res.link) {
-        if (res.link.indexOf('https://www.facebook.com/photo.php') == -1) {
-          link = res.link;
-        }
+    this.login().then(res => {
+      let params = {
+        'token': res.authResponse.accessToken,
+        'fields': 'id,message,link,from,with_tags,updated_time,attachments,comments{comments,message,from}'
       }
-      let payload = {
-        id: res.id,
-        message: res.message,
-        link: link,
-        from: res.from.name,
-        attachments: res.attachments.data[0].subattachments || [],
-        comments: comments,
-        updated_time: res.updated_time
-      };
-      this.store.dispatch({
-        type: SET,
-        payload: payload
-      });
-    })
+
+      this.api('/' + id, FacebookApiMethod.get, params).then(res => {
+        let comments = [];
+        let link = '';
+        if (res.comments)
+          comments = res.comments.data;
+        if (res.link) {
+          if (res.link.indexOf('https://www.facebook.com/photo.php') == -1) {
+            link = res.link;
+          }
+        }
+        let payload = {
+          id: res.id,
+          message: res.message,
+          link: link,
+          from: res.from.name,
+          attachments: res.attachments.data[0].subattachments || [],
+          comments: comments,
+          updated_time: res.updated_time
+        };
+        this.store.dispatch({
+          type: SET,
+          payload: payload
+        });
+      })
+    });
   }
 
   addToBlackList(post) {
@@ -248,7 +254,7 @@ export class FbService {
     return isfound;
   }
 
-  private existInFavorList(id) {
+  public existInFavorList(id) {
     let isfound = false;
     if (this.favorList) {
       let myfavorlist = this.favorList.filter(x => x.uid == this.authUser.uid);
@@ -267,6 +273,9 @@ export class FbService {
       post['uid'] = this.authUser.uid;
       this.favorListsub.push(post);
     }
+  }
+  removeFaovr(post) {
+    this.favorListsub.remove(post.$key);
   }
 }
 

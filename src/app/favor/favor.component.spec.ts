@@ -12,9 +12,9 @@ import {
 
 import { FavorComponent } from './favor.component';
 
-describe('Component: Favor', () => {
+describe('Component: Favor', (store, af) => {
   it('should create an instance', () => {
-    let component = new FavorComponent();
+    let component = new FavorComponent(store, af);
     expect(component).toBeTruthy();
   });
 });

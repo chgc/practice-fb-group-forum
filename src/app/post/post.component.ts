@@ -4,13 +4,11 @@ import { FbService } from './shared/index';
   moduleId: module.id,
   selector: 'fbf-post',
   template: `<router-outlet></router-outlet>`,
-  styleUrls: ['post.component.css'],
-  providers: [FbService]
+  styleUrls: ['post.component.css']
 })
 export class PostComponent implements OnInit {
 
   constructor(private fb: FbService) {
-
   }
 
   ngOnInit() {
