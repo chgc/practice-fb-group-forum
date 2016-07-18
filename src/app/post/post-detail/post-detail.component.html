@@ -1,21 +1,21 @@
-<div> 
-  <p [innerHtml]="post?.message | newline">></p>
-  <a [href]="post?.link" target="_blank">{{ post?.link}}</a>
+<div>
+    <p [innerHtml]="post?.message | newline">></p>
+    <div [innerHtml]="post?.link | youtube  | newline"></div>
 </div>
+<br>
 <span>{{ post?.from }} {{ post?.updated_time | date }}</span>
 <br>
 <a class="btn btn-default" [routerLink]="['..']">back</a>
 <br>
-<img *ngFor="let img of post?.attachments?.data" [src]="img.media.image.src" [width]="img.media.image.width" [height]="img.media.image.height"
-/>
+<img *ngFor="let img of post?.attachments?.data" [src]="img.media.image.src" [width]="img.media.image.width" [height]="img.media.image.height" />
 <hr />
 <ul>
-  <li *ngFor="let comment of post?.comments">
-    {{ comment.message }}
-    <ul *ngIf="comment.comments">
-      <li *ngFor="let subcomment of comment.comments.data">
-        {{ subcomment.message }}
-      </li>
-    </ul>
-  </li>
+    <li *ngFor="let comment of post?.comments">
+        {{ comment.message }}
+        <ul *ngIf="comment.comments">
+            <li *ngFor="let subcomment of comment.comments.data">
+                {{ subcomment.message }}
+            </li>
+        </ul>
+    </li>
 </ul>

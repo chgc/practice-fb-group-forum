@@ -1,15 +1,16 @@
 <div (window:scroll)="onScroll($event)">
-  <div class="row-fluid card" *ngFor="let post of data?.Posts">
-    <div class="content span12">
-      <div [innerHtml]="post.message | more: 0:120 | youtube | newline">
-      </div>
-      <div class="writer">
-        <small>{{post.updated_time | date }}  by {{ post.from.name }}</small>
-      </div>
+    <div class="row-fluid card" *ngFor="let post of data?.Posts">
+        <div class="content span12">
+            <div [innerHtml]="post.message | more: 0:120 | newline">
+            </div>
+            <div [innerHtml]="post.link | youtube  | newline"></div>
+            <div class="writer">
+                <small>{{post.updated_time | date }}  by {{ post.from.name }}</small>
+            </div>
+        </div>
+        <div class="actions">
+            <button class="btn btn-xs btn-info" (click)="onSelect(post)">更多</button>
+            <button class="btn btn-xs btn-warning pull-right" (click)="addToBlackList(post)">封鎖&nbsp;{{  post.from.name }}</button>
+        </div>
     </div>
-    <div class="actions">
-      <button class="btn btn-xs btn-info" (click)="onSelect(post)">更多</button>
-      <button class="btn btn-xs btn-warning pull-right" (click)="addToBlackList(post)">封鎖</button>
-    </div>
-  </div>
 </div>

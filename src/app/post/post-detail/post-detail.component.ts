@@ -4,14 +4,14 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 
 import { FbService, Post, CLEAR } from '../shared/index';
-import { NewlinePipe } from '../../shared/index';
+import { NewlinePipe, YoutubePipe } from '../../shared/index';
 
 @Component({
   moduleId: module.id,
   selector: 'fbf-post-detail',
   templateUrl: 'post-detail.component.html',
   styleUrls: ['post-detail.component.css'],
-  pipes: [NewlinePipe]
+  pipes: [NewlinePipe, YoutubePipe]
 })
 export class PostDetailComponent implements OnInit, OnDestroy {
 
