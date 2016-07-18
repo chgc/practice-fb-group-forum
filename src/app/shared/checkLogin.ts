@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Router, CanActivate} from '@angular/router';
 
-import { FbService } from './index'
+import { FbService } from '../post/shared/index'
 
 @Injectable()
 export class CheckLogin implements CanActivate {

@@ -2,7 +2,7 @@ import { RouterConfig } from '@angular/router';
 import { PostComponent } from './';
 import { PostListComponent } from './post-list';
 import { PostDetailComponent } from './post-detail';
-import { CheckLogin } from './shared/checkLogin';
+import { CheckLogin } from '../shared/checkLogin';
 
 export const PostRoutes: RouterConfig = [
     {

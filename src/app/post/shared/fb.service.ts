@@ -222,8 +222,9 @@ export class FbService {
   addToBlackList(post) {
     if (!this.existInBlackList(post.from.id)) {
       let user = post.from;
-      user['updated_time'] = new Date();
+      user['updated_time'] = new Date().getTime();
       user['uid'] = this.authUser.uid;
+      console.log(user);
       this.blackListsub.push(user);
       this.refresh();
     }

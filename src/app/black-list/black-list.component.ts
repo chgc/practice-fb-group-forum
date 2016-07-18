@@ -21,9 +21,16 @@ export class BlackListComponent implements OnInit {
 
   ngOnInit() {
     this._blacklistService.blackList.subscribe(users => {
-      this.users = users.filter((user: any) => {
-        return user.uid == this.fbService.authUser.uid;
+      if (this.fbService.authUser) {
+        this.users = users
+         .filter((user: any) => {
+          return user.uid == this.fbService.authUser.uid;
+        });
+      }
+      this.users.forEach(element => {
+        element['updated_time'] = new Date(element['updated_time']);
       });
+      console.log(this.users);
     })
   }
 

@@ -1,3 +1,7 @@
 <div *ngFor="let user of users">
-    <button class="btn btn-warning" (click)="unblock(user)">unblock</button>&nbsp;{{ user.name }}
+    <p>
+        {{ user.name }}
+        @ {{ user.updated_time | date: 'short' }}
+    </p>
+    <button class="btn btn-warning btn-xs" (click)="unblock(user)">unblock</button>
 </div>
