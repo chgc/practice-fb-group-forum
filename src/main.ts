@@ -6,7 +6,7 @@ import { ROUTER_DIRECTIVES } from '@angular/router';
 import { provideStore } from '@ngrx/store';
 import { FIREBASE_PROVIDERS, defaultFirebase } from 'angularfire2';
 
-import { postReducer } from './app/post/shared/postReducer';
+import { postReducer } from './app/post/shared/post.reducer';
 import { FavorReducer } from './app/favor/shared/favor.reducer';
 import { FbService } from './app/post/shared';
 
