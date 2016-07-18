@@ -40,4 +40,13 @@ export class PostDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
   }
+
+  addToFavor(post) {
+    let obj = {
+      id: post.id,
+      message: post.message,
+      'from': post.from
+    };
+    this.fb.addToMyFavor(obj);
+  }
 }

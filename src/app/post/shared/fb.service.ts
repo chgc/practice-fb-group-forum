@@ -14,6 +14,7 @@ export class FbService {
 
   userObj: FacebookLoginResponse;
   blackListsub: FirebaseListObservable<any>;
+  favorListsub: FirebaseListObservable<any>;
   authUsersub: any;
   authUser: FirebaseAuthState;
   private groupID = '609637942379913';
@@ -21,12 +22,14 @@ export class FbService {
   private version = 'v2.7'; // or v2.0, v2.1, v2.2, v2.3
   private postlimit = 50;
   blackList: any;
+  favorList: any;
 
   constructor(public store: Store<any>, public af: AngularFire) {
     this.authUsersub = this.af.auth.subscribe(user => {
       this.authUser = user;
     })
     this.blackListsub = af.database.list('blacklist');
+    this.favorListsub = af.database.list('favor');
     this.load();
     this.init();
   }
@@ -159,6 +162,9 @@ export class FbService {
         this.getGroupFeed();
       }
     })
+    this.favorListsub.subscribe(data => {
+      this.favorList = data;
+    });
   }
 
   getGroupFeed(params = {}) {
@@ -224,7 +230,6 @@ export class FbService {
       let user = post.from;
       user['updated_time'] = new Date().getTime();
       user['uid'] = this.authUser.uid;
-      console.log(user);
       this.blackListsub.push(user);
       this.refresh();
     }
@@ -241,6 +246,27 @@ export class FbService {
       }
     }
     return isfound;
+  }
+
+  private existInFavorList(id) {
+    let isfound = false;
+    if (this.favorList) {
+      let myfavorlist = this.favorList.filter(x => x.uid == this.authUser.uid);
+      for (let i = 0; i < myfavorlist.length; i++) {
+        if (myfavorlist[i].id == id) {
+          isfound = true;
+        }
+      }
+    }
+    return isfound;
+  }
+  addToMyFavor(post) {
+    console.log(post);
+    if (!this.existInFavorList(post.from.id)) {
+      post['updated_time'] = new Date().getTime();
+      post['uid'] = this.authUser.uid;
+      this.favorListsub.push(post);
+    }
   }
 }
 
