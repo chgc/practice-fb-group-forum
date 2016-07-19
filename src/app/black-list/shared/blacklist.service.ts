@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import 'rxjs/Rx';
 import { Subject } from 'rxjs/Subject';
 
-import { RESET } from '../../post/shared/index';
+import { POST_RESET } from '../../post/shared/index';
 
 @Injectable()
 export class BlacklistService {
@@ -20,6 +20,6 @@ export class BlacklistService {
 
   unblock(user) {
     this.blackList.remove(user);
-    this.store.dispatch({ type: RESET });
+    this.store.dispatch({ type: POST_RESET });
   }
 }

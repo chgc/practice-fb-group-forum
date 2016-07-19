@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import 'rxjs/Rx';
 
 import { AngularFire, FirebaseListObservable, FirebaseAuthState, AuthProviders, AuthMethods } from 'angularfire2';
-import { Post, LOAD, RESET, SET } from '../shared/index';
+import { Post, POST_LOAD, POST_RESET, POST_SET } from '../shared/index';
 import { FAVOR_LOAD } from '../../favor/shared/favor.reducer';
 declare var FB: any;
 declare let firebase: any;
@@ -151,7 +151,7 @@ export class FbService {
 
   // Main Fuctions
   refresh() {
-    this.store.dispatch({ type: RESET, payload: [] });
+    this.store.dispatch({ type: POST_RESET, payload: [] });
     this.getGroupFeed();
   }
 
@@ -186,7 +186,7 @@ export class FbService {
           });
 
           this.store.dispatch({
-            type: LOAD,
+            type: POST_LOAD,
             payload: {
               'posts': posts,
               'paging': res.paging
@@ -229,7 +229,7 @@ export class FbService {
           updated_time: res.updated_time
         };
         this.store.dispatch({
-          type: SET,
+          type: POST_SET,
           payload: payload
         });
       })

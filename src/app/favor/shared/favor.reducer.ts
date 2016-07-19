@@ -13,4 +13,3 @@ export const FavorReducer: ActionReducer<any>
         return state;
     }
   }
-

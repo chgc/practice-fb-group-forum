@@ -1,5 +1,5 @@
-<div *ngFor="let favor of favorList">
-    {{ favor.message}}
+<div *ngFor="let favor of favorList" (click)="onSelect(favor)">
+     <p [innerHtml]="favor.message | newline">></p>
     <hr>
     <button type="button" class="btn btn-warning" (click)="removeFavor(favor)">移除</button>
 </div>

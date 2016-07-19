@@ -2,10 +2,10 @@
 import { ActionReducer, Action } from '@ngrx/store';
 import { Post, FbService, FacebookApiMethod} from './index';
 
-export const LOAD = 'LOAD';
-export const RESET = 'RESET';
-export const CLEAR = 'CLEAR';
-export const SET = 'SET';
+export const POST_LOAD = 'POST_LOAD';
+export const POST_RESET = 'POST_RESET';
+export const POST_CLEAR = 'POST_CLEAR';
+export const POST_SET = 'POST_SET';
 
 let INITAL_STATE: Post = new Post();
 
@@ -21,7 +21,7 @@ export const postReducer: ActionReducer<Post>
     }
     console.log('post:', action);
     switch (action.type) {
-      case LOAD:
+      case POST_LOAD:
         let ar = [];
         let newstate: Post = new Post();
         action.payload.posts.forEach(element => {
@@ -33,14 +33,14 @@ export const postReducer: ActionReducer<Post>
           ...ar];
         newstate.paging = Object.assign({}, action.payload.paging);
         return newstate;
-      case SET:
+      case POST_SET:
         if (action.payload)
           Object.assign(state.current, action.payload);
         return state;
-      case CLEAR:
+      case POST_CLEAR:
         state.current = {};
         return state;
-      case RESET:
+      case POST_RESET:
         return new Post();
       default:
         return state;

@@ -7,16 +7,16 @@
 <br>
 <button type="button" class="btn btn-info" (click)="addToFavor(post)" *ngIf="!fb.existInFavorList(post.id)">加入我的最愛</button>
 <button type="button" class="btn btn-warning" (click)="removeFavor(post)" *ngIf="fb.existInFavorList(post.id)">移出我的最愛</button>
-<a class="btn btn-default pull-right" [routerLink]="['..']">back</a>
+<a class="btn btn-default pull-right" (click)="back()">back</a>
 <br>
 <img *ngFor="let img of post?.attachments?.data" [src]="img.media.image.src" [width]="img.media.image.width" [height]="img.media.image.height" />
 <hr />
 <ul>
     <li *ngFor="let comment of post?.comments">
-        {{ comment.message }}
+        <span [innerHtml]="comment.from.name" class="replier"></span> {{ comment.message }}
         <ul *ngIf="comment.comments">
             <li *ngFor="let subcomment of comment.comments.data">
-                {{ subcomment.message }}
+                <span [innerHtml]="subcomment.from.name" class="replier"></span> {{ subcomment.message | newline }}
             </li>
         </ul>
     </li>
