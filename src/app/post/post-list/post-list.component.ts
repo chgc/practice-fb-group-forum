@@ -3,7 +3,7 @@ import { ActivatedRoute, Router} from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 
-import { FbService, Post, LOAD } from '../shared/index';
+import { FbService, Post } from '../shared/index';
 import { NewlinePipe, MorePipe, YoutubePipe } from '../../shared/index';
 
 

@@ -12,11 +12,51 @@ export class YoutubePipe implements PipeTransform {
     if (value.indexOf('youtu') == -1) {
       // 回傳<a ...>
       //    <a [href]="post?.link" target="_blank">{{ post?.link}}</a>
-      let doc = document.createElement('a');
-      doc.href = value.toString();
-      doc.target = "_blank";
-      doc.appendChild(document.createTextNode(value));
-      return doc.outerHTML;
+      let re = new RegExp(
+        "^" +
+        // protocol identifier
+        "(?:(?:https?|ftp)://)" +
+        // user:pass authentication
+        "(?:\\S+(?::\\S*)?@)?" +
+        "(?:" +
+        // IP address exclusion
+        // private & local networks
+        "(?!(?:10|127)(?:\\.\\d{1,3}){3})" +
+        "(?!(?:169\\.254|192\\.168)(?:\\.\\d{1,3}){2})" +
+        "(?!172\\.(?:1[6-9]|2\\d|3[0-1])(?:\\.\\d{1,3}){2})" +
+        // IP address dotted notation octets
+        // excludes loopback network 0.0.0.0
+        // excludes reserved space >= 224.0.0.0
+        // excludes network & broacast addresses
+        // (first & last IP address of each class)
+        "(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])" +
+        "(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}" +
+        "(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))" +
+        "|" +
+        // host name
+        "(?:(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)" +
+        // domain name
+        "(?:\\.(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)*" +
+        // TLD identifier
+        "(?:\\.(?:[a-z\\u00a1-\\uffff]{2,}))" +
+        // TLD may end with dot
+        "\\.?" +
+        ")" +
+        // port number
+        "(?::\\d{2,5})?" +
+        // resource path
+        "(?:[/?#]\\S*)?" +
+        "$", "i"
+      );
+      let url = re.exec(value.toString());
+      if (url) {
+        let doc = document.createElement('a');
+        doc.href = url[0];
+        doc.target = "_blank";
+        doc.appendChild(document.createTextNode(url[0]));
+        value = value.replace(url[0], doc.outerHTML);
+      }
+      return value;
     } else {
       let youtubeId = '';
       let doc = document.createElement('a');

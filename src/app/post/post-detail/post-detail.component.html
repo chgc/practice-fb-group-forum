@@ -13,10 +13,10 @@
 <hr />
 <ul>
     <li *ngFor="let comment of post?.comments">
-        <span [innerHtml]="comment.from.name" class="replier"></span> {{ comment.message }}
+        <span class="replier">{{ comment.from.name }}</span><span [innerHtml]="comment.message | youtube | newline"></span>
         <ul *ngIf="comment.comments">
             <li *ngFor="let subcomment of comment.comments.data">
-                <span [innerHtml]="subcomment.from.name" class="replier"></span> {{ subcomment.message | newline }}
+                <span class="replier">{{ subcomment.from.name }}</span><span [innerHtml]="subcomment.message | youtube  | newline"></span>
             </li>
         </ul>
     </li>
