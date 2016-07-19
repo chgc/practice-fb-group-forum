@@ -207,6 +207,8 @@ export class FbService {
       this.api('/' + id, FacebookApiMethod.get, params).then(res => {
         let comments = [];
         let link = '';
+        let attachments = [];
+
         if (res.comments)
           comments = res.comments.data;
         if (res.link) {
@@ -214,12 +216,15 @@ export class FbService {
             link = res.link;
           }
         }
+        if (res.attachments && res.attachments.data[0]) {
+          attachments = res.attachments.data[0].subattachments || [];
+        }
         let payload = {
           id: res.id,
           message: res.message,
           link: link,
           from: res.from.name,
-          attachments: res.attachments.data[0].subattachments || [],
+          attachments: attachments,
           comments: comments,
           updated_time: res.updated_time
         };
